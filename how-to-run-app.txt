@@ -1,0 +1,7 @@
+- install the repo.
+- copy the path of index.html and paste it on browser (use chrome) then press enter.
+- if the website loaded the engineers then it's working. O.W do the following:
+* open bash in dir of index.html and run the command "python -m http.server"
+* open browser (use chrome), and write the url: "localhost:8000/index.html"
+
+if neither the first method nor the second did not work, contact me @ mohammadmuwafi14@gmail.com. 

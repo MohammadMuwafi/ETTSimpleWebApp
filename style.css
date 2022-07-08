@@ -1,0 +1,187 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #A9DCE3;
+}
+
+#yh {
+    background-color: green;
+    color: white;
+    border: 0;
+}
+
+#nh {
+    background-color: rgb(174, 15, 15);
+    color: white;
+    border: 0;
+}
+
+#yh:hover {
+    background-color: rgb(16, 171, 16);
+    color: white;
+    border: 0;
+}
+
+#nh:hover {
+    background-color: rgb(229, 88, 88);
+    color: white;
+    border: 0;
+}
+
+
+/* header,
+footer {
+    width: 100%;
+    height: 120px;
+    background-color: #F5F5DC;
+    color: white;
+    text-align: center;
+    margin: 20px;
+    padding: 20px;
+} */
+
+header,
+footer {
+    width: 100%;
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 2.1rem;
+    padding: 9px 0;
+    background-color: #E9E9B4;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+header h3 {
+    margin-right: 40rem;
+}
+
+footer {
+    bottom: 0;
+}
+
+.nav {
+    position: absolute;
+    width: 100%;
+}
+
+.nav a {
+    position: relative;
+    left: 60%;
+    top: 20px;
+    color: black;
+    text-decoration: none;
+    margin-right: 1rem;
+}
+
+.buttons {
+    margin: 1rem;
+}
+
+.back-button,
+.next-button {
+    font-weight: bold;
+    width: 40px;
+    height: 40px;
+    border-width: 0;
+    border-style: solid;
+    border-radius: 50%;
+    background-color: rgb(110, 109, 109);
+    color: white;
+}
+
+.list-engineers-button {
+    width: 200px;
+    height: 50px;
+    border-width: 0;
+    border-style: solid;
+    border-radius: 30px;
+    background-color: #2D75E8;
+    color: white;
+}
+
+.list-engineers-button:hover {
+    width: 205px;
+    height: 50px;
+    border-style: solid;
+    border-radius: 30px;
+    background-color: #11459B;
+    color: white;
+    cursor: pointer;
+}
+
+.back-button:hover,
+.next-button:hover {
+    border-style: solid;
+    border-radius: 30px;
+    background-color: silver;
+    cursor: pointer;
+}
+
+.search-bar {
+    width: 500px;
+    height: 60px;
+    padding: 1rem;
+    margin: 1rem;
+    border-width: 0.5px;
+    border-color: #2c0b1222;
+    border-radius: 1rem;
+}
+
+.container {
+    max-width: 1600px;
+    margin: 0 auto;
+    text-align: center;
+    padding-bottom: 1rem;
+    /* height: 800px; */
+}
+
+.container .heading {
+    font-size: 40px;
+    color: black;
+}
+
+.container .box-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+}
+
+.container .box-container .box {
+    max-width: 350px;
+    background-color: #7689DE;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+    /* color: white; */
+}
+
+.container .box-container .image {
+    border-radius: 5px;
+    background-color: #5A71D8;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.35);
+}
+
+.container .box-container .box:hover {
+    background-color: #334FCE!important;
+}
+
+.hire-button1,
+.hire-button2,
+.hire-button3,
+.hire-button4,
+.hire-button5,
+.hire-button6,
+.hire-button7,
+.hire-button8 {
+    width: 100px;
+    height: 30px;
+    margin-top: 0.2rem;
+}

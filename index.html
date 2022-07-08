@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> Recruitment Website</title>
+    <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body onLoad="JavaScript:checkRefresh();">
+    <p type="hidden" id="test"></p>
+
+    <header>
+        <h3>X Technologies</h3>
+        <div class="nav">
+            <a href="">Home</a>
+            <a href="">Blog</a>
+            <a href="">FAQ</a>
+            <a href="">About</a>
+            <a href="">Info</a>
+            <a href="">LOGIN</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <input class="search-bar" type="text" name="search" placeholder="Search an Engineer.." />
+
+        <div class="container">
+            <h1 class="heading" id="heading">Enginners Page 1</h1>
+            <div class="buttons">
+                <button class="back-button"> &lt&lt </button>
+                <button class="list-engineers-button"> List Engineers in Order </button>
+                <button class="next-button"> &gt&gt </button>
+            </div>
+
+            <div class="box-container">
+                <div class="box" id="b1" onclick="showInfo(1)">
+                    <div class="image">
+                        <img src="./img.jpg" width="200" height="200" alt="" />
+                    </div>
+                    <div class="content">
+                        <h3 class="name1">Name</h3>
+                        <p class="description1">I am senior backend developer</p>
+                        <button class="hire-button1" id="yh" onclick="hireMe(1, true)"> Hire me </button>
+                        <button class="hire-button1" id="nh" onclick="hireMe(1, false)"> Fire me </button>
+
+                    </div>
+                </div>
+                <div class="box" id="b2" onclick="showInfo(2)">
+                    <div class="image">
+                        <img src="./img.jpg" width="200" height="200" alt="" />
+                    </div>
+                    <div class="content">
+                        <h3 class="name2">Name</h3>
+                        <p class="description2">I am senior backend developer</p>
+                        <button class="hire-button2" id="yh" onclick="hireMe(2, true)"> Hire me </button>
+                        <button class="hire-button2" id="nh" onclick="hireMe(2, false)"> Fire me </button>
+                    </div>
+                </div>
+                <div class="box" id="b3" onclick="showInfo(3)">
+                    <div class="image">
+                        <img src="./img.jpg" width="200" height="200" alt="" />
+                    </div>
+                    <div class="content">
+                        <h3 class="name3">Name</h3>
+                        <p class="description3">I am senior backend developer</p>
+                        <button class="hire-button3" id="yh" onclick="hireMe(3, true)"> Hire me </button>
+                        <button class="hire-button3" id="nh" onclick="hireMe(3, false)"> Fire me </button>
+                    </div>
+                </div>
+                <div class="box" id="b4" onclick="showInfo(4)">
+                    <div class="image">
+                        <img src="./img.jpg" width="200" height="200" alt="" />
+                    </div>
+                    <div class="content">
+                        <h3 class="name4">Name</h3>
+                        <p class="description4">I am senior backend developer</p>
+                        <button class="hire-button4" id="yh" onclick="hireMe(4, true)"> Hire me </button>
+                        <button class="hire-button4" id="nh" onclick="hireMe(4, false)"> Fire me </button>
+                    </div>
+                </div>
+                <div class="box" id="b5" onclick="showInfo(5)">
+                    <div class="image">
+                        <img src="./img.jpg" width="200" height="200" alt="" />
+                    </div>
+                    <div class="content">
+                        <h3 class="name5">Name</h3>
+                        <p class="description5">I am senior backend developer</p>
+                        <button class="hire-button5" id="yh" onclick="hireMe(5, true)"> Hire me </button>
+                        <button class="hire-button5" id="nh" onclick="hireMe(5, false)"> Fire me </button>
+                    </div>
+                </div>
+                <div class="box" id="b6" onclick="showInfo(6)">
+                    <div class="image">
+                        <img src="./img.jpg" width="200" height="200" alt="" />
+                    </div>
+                    <div class="content">
+                        <h3 class="name6">Name</h3>
+                        <p class="description6">I am senior backend developer</p>
+                        <button class="hire-button6" id="yh" onclick="hireMe(6, true)"> Hire me </button>
+                        <button class="hire-button6" id="nh" onclick="hireMe(6, false)"> Fire me </button>
+                    </div>
+                </div>
+                <div class="box" id="b7" onclick="showInfo(7)">
+                    <div class="image">
+                        <img src="./img.jpg" width="200" height="200" alt="" />
+                    </div>
+                    <div class="content">
+                        <h3 class="name7">Name</h3>
+                        <p class="description7">I am senior backend developer</p>
+                        <button class="hire-button7" id="yh" onclick="hireMe(7, true)"> Hire me </button>
+                        <button class="hire-button7" id="nh" onclick="hireMe(7, false)"> Fire me </button>
+                    </div>
+                </div>
+                <div class="box" id="b8" onclick="showInfo(8)">
+                    <div class="image">
+                        <img src="./img.jpg" width="200" height="200" alt="" />
+                    </div>
+                    <div class="content">
+                        <h3 class="name8">Name</h3>
+                        <p class="description8">I am senior backend developer</p>
+                        <button class="hire-button8" id="yh" onclick="hireMe(8, true)"> Hire me </button>
+                        <button class="hire-button8" id="nh" onclick="hireMe(8, false)"> Fire me </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <footer>
+            <h3>Copyright &copy; 2022 X Technologies. All rights reserved.</h3>
+        </footer>
+        <script src="./script.js"></script>
+
+</html>
