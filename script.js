@@ -1,4 +1,7 @@
-// dummy list of employees.
+/**
+ * employees array
+ * @type {Array<{name: string, description: string, hiredOrNot: string}>}
+ */
 var employees = [
     { name: 'Abd', description: 'Junior QA Engineer', hiredOrNot: 'No' },
     { name: 'Ahmad', description: 'Junior Backend Engineer', hiredOrNot: 'No' },
@@ -42,21 +45,37 @@ var employees = [
 // I used this function since the build-in function did not work with me.
 sortList(employees);
 
-var heading = document.querySelector(".heading");
-var pageNumber = parseInt(heading.innerHTML.split(" ").slice(-1), 10);
+/**
+ * number of employees in the list of employees.
+ * @type {number}
+ */
 var numberOfEmployees = employees.length;
+
+/**
+ * number of pages of employees.
+ * @type {number}
+ */
 var numberOfPages = Math.floor((numberOfEmployees + 7) / 8);
+
+/**
+ * array of arrays of employees.
+ * @type {Array<Array<{name: string, description: string, hiredOrNot: string}>>}
+ */
 var pages = new Array(numberOfPages);
-// handle the search feature.
-const searchBar = document.querySelector(".search-bar");
-searchBar.addEventListener("input", (e) => searchAnEmployee(e.target.value));
 
-
+// fill the current page with employees.
 fillListOfEmployees();
 
-// the shuffle version of the employee list.
-let shuffledListsOfEmployees = pages;
+/**
+ * the shuffle version of array of arrays of employees.
+ * @type {Array<Array<{name: string, description: string, hiredOrNot: string}>>}
+ */
+var shuffledListsOfEmployees = pages;
 
+
+/**
+ * check if it was a reload page or refresh page.
+ */
 function checkRefresh() {
     //check for Navigation Timing API support
     if (window.performance) {
@@ -100,7 +119,12 @@ function checkRefresh() {
     }
 }
 
-// sort an employee list alphabetically based on name of employee.
+
+
+/**
+ * sort an employees list alphabetically based on name of employee.
+ * @param {Array<{name: string, description: string, hiredOrNot: string}>} list 
+ */
 function sortList(list) {
     for (var i = 0; i < list.length; i++) {
         for (var j = 0; j < list.length; j++) {
@@ -114,25 +138,25 @@ function sortList(list) {
     console.log("INFO   [The employees are sorted]");
 }
 
+
+
 /**
- * load employees in page based on their 
- * order in passad list in the function.
+ * load employees in listOfEmployee in the current page based on their order in list.
+ * @param {Array<{name: string, description: string, hiredOrNot: string}>} listOfEmployee 
  */
 function loadEmployeesOnPage(listOfEmployee) {
 
-    /** end store the max number of employees to be shown in single 
-     *  page but the last page may contain less than 8 employees.
-     */
+    // end store the max number of employees to be shown in single 
+    // page but the last page may contain less than 8 employees.
     var end = 8;
     var pageNumber = parseInt(localStorage.getItem("pageNumber"), 10);
     if (pageNumber == numberOfPages) {
         end = numberOfEmployees - (pageNumber - 1) * 8;
     }
 
-    /**
-     * if the ith employee in the page was exist ==> show it and 
-     * fill its info., O.W hide the box of the ith employee.
-     */
+
+    // if the ith employee in the page was exist ==> show it and 
+    // fill its info., O.W hide the box of the ith employee.
 
     // this loop to show the ith employee (if exist)
     for (var index = 0; index < end; index++) {
@@ -165,10 +189,13 @@ function loadEmployeesOnPage(listOfEmployee) {
 }
 
 
-// recolor the box of the employee if his/her name is
-// partially matched the entered name in the search bar.
+
+/**
+ * search in the current page about the employee's name that matches 
+ * parially the searchTerm and recoloer the box of the that employee 
+ * @param {string} searchTerm 
+ */
 function searchAnEmployee(searchTerm) {
-    // the search feature works in the current page only.
 
     // loop through employees in the page and see if there a matching.
     for (var index = 0; index < 8; index++) {
@@ -187,7 +214,12 @@ function searchAnEmployee(searchTerm) {
     console.log("INFO   [The search process is finished]");
 }
 
-// divide the employees to array, each array has only 8 or less of employees. 
+
+
+/**
+ * divide the employees to groups of 8, each group is an array 
+ * that has only 8 or less of employees (the last page conaints <= 8)
+ */
 function fillListOfEmployees() {
     var employee_cnt = 0;
     for (var i = 0; i < numberOfPages; i++) {
@@ -206,10 +238,14 @@ function fillListOfEmployees() {
     console.log("INFO   [The employees are filled in their pages]");
 }
 
-// update page number and its content.
+
+
+/**
+ * update the content of the page as well as the page's number.
+ * @param {number} incOrDec - +1 if goto the next page, -1 if goto the previous page. 
+ * @returns - returns nothing, but it used to stop the function in case it was an edge page.
+ */
 function updatePage(incOrDec) {
-    // go to next page or previous page based on 
-    // incOrDec var (+1 to next or -1 to previous) 
 
     var heading = document.querySelector(".heading");
     var pageNumber = parseInt(localStorage.getItem("pageNumber"), 10);
@@ -236,10 +272,13 @@ function updatePage(incOrDec) {
     }
 }
 
-function sortRepresentedEmployees() {
-    // if the button of "sort the employees" was pressed
-    // then the employees will be sorted then filled again.
 
+
+/**
+ * if the button of "sort the employees" was pressed
+ * then the employees will be sorted then filled again.
+ */
+function sortRepresentedEmployees() {
     var pageNumber = parseInt(localStorage.getItem("pageNumber"), 10) - 1;
     sortList(shuffledListsOfEmployees[pageNumber]);
     loadEmployeesOnPage(shuffledListsOfEmployees[pageNumber]);
@@ -247,24 +286,13 @@ function sortRepresentedEmployees() {
     console.log("INFO   [The employees of this page were sorted]")
 }
 
-function rgb(r, g, b) {
-    return "rgb(" + r + "," + g + "," + b + ")";
-}
 
-// link updatePage function with back-button.
-document.querySelector(".back-button").addEventListener("click", function() {
-    updatePage(-1);
-});
 
-// link updatePage function with next-button.
-document.querySelector(".next-button").addEventListener("click", function() {
-    updatePage(+1);
-});
-
-document.querySelector(".list-engineers-button").addEventListener("click", sortRepresentedEmployees);
-
+/**
+ * show an alert (as popup msg) to show the info of certain employee that his/her box is clicked.
+ * @param {number} num - the number of box that contains the clicked engineer.
+ */
 function showInfo(num) {
-    // this will show an alert (as popup msg) to show the info of certain employee.
     var employeeName = document.querySelector(".name" + num.toString()).textContent;
     var employeeDescription = document.querySelector(".description" + num.toString()).textContent;
     var employeeStatus = "Hired? ";
@@ -280,10 +308,14 @@ function showInfo(num) {
     console.log("INFO   [An popup was shown certain employee]")
 }
 
-function hireMe(num, status) {
-    // if the button "hireMe" was pressed then the engineer become hired.  
-    // if the button "fireMe" was pressed then the engineer become fired.
 
+/**
+ * if the button "hireMe" was pressed then the engineer become hired.
+ * if the button "FireMe" was pressed then the engineer become fired.
+ * @param {number} num - the number of box that contains the clicked engineer.
+ * @param {Boolean} status - the status of engineer (hired or still not hired).
+ */
+function hireMe(num, status) {
     var employeeBox = document.querySelector("#b" + num.toString());
     var employeeName = document.querySelector(".name" + num.toString()).textContent;
     var employeeDescription = document.querySelector(".description" + num.toString()).textContent;
@@ -319,3 +351,31 @@ function hireMe(num, status) {
         }
     }
 }
+
+
+/**
+ * get the color in rgb format.
+ * @param {number} r - red color
+ * @param {number} g - green color
+ * @param {number} b - blue color
+ * @returns {string} - color in rgb format
+ */
+function rgb(r, g, b) {
+    return "rgb(" + r + "," + g + "," + b + ")";
+}
+
+// link updatePage function with back-button.
+document.querySelector(".back-button").addEventListener("click", function() {
+    updatePage(-1);
+});
+
+// link updatePage function with next-button.
+document.querySelector(".next-button").addEventListener("click", function() {
+    updatePage(+1);
+});
+
+// link sortRepresentedEmployees function with list-engineers-button.
+document.querySelector(".list-engineers-button").addEventListener("click", sortRepresentedEmployees);
+
+// link searchAnEmployee function with search-bar.
+document.querySelector(".search-bar").addEventListener("input", (e) => searchAnEmployee(e.target.value));
