@@ -42,8 +42,6 @@ var employees = [
     { name: 'Yazan', description: 'Junior Backend Engineer', hiredOrNot: 'No' }
 ];
 
-// I used this function since the build-in function did not work with me.
-sortList(employees);
 
 /**
  * number of employees in the list of employees.
@@ -57,26 +55,13 @@ var numberOfEmployees = employees.length;
  */
 var numberOfPages = Math.floor((numberOfEmployees + 7) / 8);
 
-/**
- * array of arrays of employees.
- * @type {Array<Array<{name: string, description: string, hiredOrNot: string}>>}
- */
-var pages = new Array(numberOfPages);
-
-// fill the current page with employees.
-fillListOfEmployees();
-
-/**
- * the shuffle version of array of arrays of employees.
- * @type {Array<Array<{name: string, description: string, hiredOrNot: string}>>}
- */
-var shuffledListsOfEmployees = pages;
 
 
 /**
  * check if it was a reload page or refresh page.
  */
 function checkRefresh() {
+
     //check for Navigation Timing API support
     if (window.performance) {
         console.log("INFO   [This app works properly on this browser]");
@@ -96,7 +81,7 @@ function checkRefresh() {
         window.localStorage.setItem("pageNumber", "1");
 
         // fill the 8 employees alphabetically.
-        loadEmployeesOnPage(pages[0]);
+        loadEmployeesOnPage(true, 1);
 
     } else {
         // This is a page refresh
@@ -108,14 +93,7 @@ function checkRefresh() {
         var heading = document.querySelector(".heading");
         heading.innerHTML = '<h1 class="heading" id="heading">Engineers Page ' + pageNumber + "</h1>";
 
-
-        // shuffle the employees of the current page and fill them.
-        shuffledListsOfEmployees[pageNumber - 1] = pages[pageNumber - 1]
-            .map((value) => ({ value, sort: Math.random() }))
-            .sort((a, b) => a.sort - b.sort)
-            .map(({ value }) => value);
-        loadEmployeesOnPage(shuffledListsOfEmployees[pageNumber - 1]);
-
+        loadEmployeesOnPage(false, pageNumber);
     }
 }
 
@@ -139,12 +117,50 @@ function sortList(list) {
 }
 
 
+function getEmployeesOfPage(pageNumber) {
+    if (!(pageNumber >= 1 && pageNumber <= numberOfPages)) {
+        return [];
+    }
+
+    var from = 0;
+    var to = 0;
+
+    if (pageNumber == 1) {
+        to = 8;
+    } else if (pageNumber == numberOfPages) {
+        from = (numberOfPages - 1) * 8;
+        to = numberOfPages - (numberOfPages - 1) * 8;
+    } else {
+        from = (numberOfPages - 1) * 8;
+        to = numberOfPages * 8;
+    }
+
+    listOfEmployee = [];
+    for (var i = from; i < to; i++) {
+        listOfEmployee.push(employees[i]);
+    }
+    return listOfEmployee;
+}
+
 
 /**
  * load employees in listOfEmployee in the current page based on their order in list.
  * @param {Array<{name: string, description: string, hiredOrNot: string}>} listOfEmployee 
  */
-function loadEmployeesOnPage(listOfEmployee) {
+function loadEmployeesOnPage(loadSortedListOrNote, pageNumber) {
+
+    listOfEmployee = getEmployeesOfPage(pageNumber);
+
+    // shuffle the employees of the current page and fill them.
+    if (loadSortedListOrNote == false) {
+        listOfEmployee = listOfEmployee
+            .map((value) => ({ value, sort: Math.random() }))
+            .sort((a, b) => a.sort - b.sort)
+            .map(({ value }) => value);
+    } else {
+        sortList(listOfEmployee);
+    }
+    console.log("==> ", listOfEmployee);
 
     // end store the max number of employees to be shown in single 
     // page but the last page may contain less than 8 employees.
@@ -217,30 +233,6 @@ function searchAnEmployee(searchTerm) {
 
 
 /**
- * divide the employees to groups of 8, each group is an array 
- * that has only 8 or less of employees (the last page conaints <= 8)
- */
-function fillListOfEmployees() {
-    var employee_cnt = 0;
-    for (var i = 0; i < numberOfPages; i++) {
-        var end = 8;
-        if (i + 1 == numberOfPages && numberOfEmployees % 8 != 0) {
-            pages[i] = new Array(numberOfEmployees - (i * 8));
-            end = numberOfEmployees - (i * 8);
-        } else {
-            pages[i] = new Array(8);
-        }
-
-        for (var j = 0; j < end; j++, employee_cnt++) {
-            pages[i][j] = employees[employee_cnt];
-        }
-    }
-    console.log("INFO   [The employees are filled in their pages]");
-}
-
-
-
-/**
  * update the content of the page as well as the page's number.
  * @param {number} incOrDec - +1 if goto the next page, -1 if goto the previous page. 
  * @returns - returns nothing, but it used to stop the function in case it was an edge page.
@@ -261,7 +253,7 @@ function updatePage(incOrDec) {
 
         localStorage.setItem("pageNumber", pageNumber.toString());
 
-        loadEmployeesOnPage(pages[pageNumber - 1]);
+        loadEmployeesOnPage(false, pageNumber);
         heading.innerHTML = '<h1 class="heading" id="heading">Engineers Page ' + pageNumber + "</h1>";
     }
 
@@ -280,8 +272,7 @@ function updatePage(incOrDec) {
  */
 function sortRepresentedEmployees() {
     var pageNumber = parseInt(localStorage.getItem("pageNumber"), 10) - 1;
-    sortList(shuffledListsOfEmployees[pageNumber]);
-    loadEmployeesOnPage(shuffledListsOfEmployees[pageNumber]);
+    loadEmployeesOnPage(true, pageNumber);
 
     console.log("INFO   [The employees of this page were sorted]")
 }
@@ -330,26 +321,12 @@ function hireMe(num, status) {
 
         if (employeeName.toLowerCase() == employees[i].name.toLowerCase() &&
             employeeDescription.toLowerCase() == employees[i].description.toLowerCase()) {
-
-            employees[i].hiredOrNot = yesOrNo;
-            localStorage.setItem("employees", JSON.stringify(employees));
+            employees[i]['hiredOrNot'] = yesOrNo;
+            console.log("YYY", getEmployeesOfPage(pageNumber));
         }
     }
 
-    var end = 8;
-    if (pageNumber == numberOfPages) {
-        end = numberOfEmployees - (numberOfPages - 1) * 8;
-    }
-    for (var i = 0; i < end; i++) {
-        if (employeeName.toLowerCase() == pages[pageNumber][i].name.toLowerCase() &&
-            employeeDescription.toLowerCase() == pages[pageNumber][i].description.toLowerCase()) {
-            pages[pageNumber][i].hiredOrNot = yesOrNo;
-        }
-        if (employeeName.toLowerCase() == pages[pageNumber][i].name.toLowerCase() &&
-            employeeDescription.toLowerCase() == pages[pageNumber][i].description.toLowerCase()) {
-            pages[pageNumber][i].hiredOrNot = yesOrNo;
-        }
-    }
+    localStorage.setItem("employees", JSON.stringify(employees));
 }
 
 
