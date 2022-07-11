@@ -138,7 +138,9 @@ footer {
     max-width: 1600px;
     margin: 0 auto;
     text-align: center;
+    /* display: center; */
     padding-bottom: 1rem;
+    padding-left: 0.4rem;
     /* height: 800px; */
 }
 

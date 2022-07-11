@@ -47,6 +47,10 @@ var pageNumber = parseInt(heading.innerHTML.split(" ").slice(-1), 10);
 var numberOfEmployees = employees.length;
 var numberOfPages = Math.floor((numberOfEmployees + 7) / 8);
 var pages = new Array(numberOfPages);
+// handle the search feature.
+const searchBar = document.querySelector(".search-bar");
+searchBar.addEventListener("input", (e) => searchAnEmployee(e.target.value));
+
 
 fillListOfEmployees();
 
@@ -54,40 +58,46 @@ fillListOfEmployees();
 let shuffledListsOfEmployees = pages;
 
 function checkRefresh() {
-    // var pTag = document.querySelector("#test");
-    // console.log(pTag.innerHTML, pTag.textContent);
-    // if (pTag.innerHTML.length == '<p type="hidden" id="test"></p>'.length) {
-    //     console.log(pTag);
-    //     pTag.innerHTML = String(
-    //         '<p type="hidden" id="test"> visited </p>'
-    //     );
-    // This is a fresh page load
-    window.localStorage.setItem("employees", JSON.stringify(employees));
+    //check for Navigation Timing API support
+    if (window.performance) {
+        console.log("INFO   [This app works properly on this browser]");
+    } else {
+        console.log("INFO   [This app cannot work properly on this browser due to window.performance]");
+    }
 
-    // add page number.
-    window.localStorage.setItem("pageNumber", "1");
+    if (performance.navigation.type == 0) {
+        // This is a fresh page load
 
-    // fill the 8 employees alphabetically.
-    // loadEmployeesOnPage(pages[0]);
+        console.log("INFO   [This is relaod page]");
 
-    // } else {
+        // load employees to LocalStorage.
+        window.localStorage.setItem("employees", JSON.stringify(employees));
 
-    // This is a page refresh
-    pageNumber = parseInt(localStorage.getItem("pageNumber"), 10);
-    var heading = document.querySelector(".heading");
-    heading.innerHTML = '<h1 class="heading" id="heading">Engineers Page ' + pageNumber + "</h1>";
+        // add page number.
+        window.localStorage.setItem("pageNumber", "1");
 
-    pageNumber -= 1;
+        // fill the 8 employees alphabetically.
+        loadEmployeesOnPage(pages[0]);
 
-    shuffledListsOfEmployees[pageNumber] = pages[pageNumber]
-        .map((value) => ({ value, sort: Math.random() }))
-        .sort((a, b) => a.sort - b.sort)
-        .map(({ value }) => value);
+    } else {
+        // This is a page refresh
 
-    // fill the shuffled 8 employees.
-    loadEmployeesOnPage(shuffledListsOfEmployees[pageNumber]);
+        console.log("INFO   [This is refreash page]");
 
-    // }
+        // update pageNumber in the title of the page.
+        pageNumber = parseInt(localStorage.getItem("pageNumber"), 10);
+        var heading = document.querySelector(".heading");
+        heading.innerHTML = '<h1 class="heading" id="heading">Engineers Page ' + pageNumber + "</h1>";
+
+
+        // shuffle the employees of the current page and fill them.
+        shuffledListsOfEmployees[pageNumber - 1] = pages[pageNumber - 1]
+            .map((value) => ({ value, sort: Math.random() }))
+            .sort((a, b) => a.sort - b.sort)
+            .map(({ value }) => value);
+        loadEmployeesOnPage(shuffledListsOfEmployees[pageNumber - 1]);
+
+    }
 }
 
 // sort an employee list alphabetically based on name of employee.
@@ -101,16 +111,30 @@ function sortList(list) {
             }
         }
     }
+    console.log("INFO   [The employees are sorted]");
 }
 
-// load employees in page based on their order in passad list in the function.
+/**
+ * load employees in page based on their 
+ * order in passad list in the function.
+ */
 function loadEmployeesOnPage(listOfEmployee) {
+
+    /** end store the max number of employees to be shown in single 
+     *  page but the last page may contain less than 8 employees.
+     */
     var end = 8;
     var pageNumber = parseInt(localStorage.getItem("pageNumber"), 10);
     if (pageNumber == numberOfPages) {
         end = numberOfEmployees - (pageNumber - 1) * 8;
     }
 
+    /**
+     * if the ith employee in the page was exist ==> show it and 
+     * fill its info., O.W hide the box of the ith employee.
+     */
+
+    // this loop to show the ith employee (if exist)
     for (var index = 0; index < end; index++) {
         var i = index + 1;
         var employeeBox = document.querySelector("#b" + i.toString());
@@ -130,20 +154,23 @@ function loadEmployeesOnPage(listOfEmployee) {
         );
     }
 
+    // this loop to hide the ith employee (if not exist)
     for (var index = end; index < 8; index++) {
         var i = index + 1;
         var employeeBox = document.querySelector("#b" + i.toString());
         employeeBox.style.display = "none";
     }
+
+    console.log("INFO   [The employees are filled in the page]")
 }
 
-// handle the search feature.
-const searchBar = document.querySelector(".search-bar");
-searchBar.addEventListener("input", (e) => searchAnEmployee(e.target.value));
 
 // recolor the box of the employee if his/her name is
 // partially matched the entered name in the search bar.
 function searchAnEmployee(searchTerm) {
+    // the search feature works in the current page only.
+
+    // loop through employees in the page and see if there a matching.
     for (var index = 0; index < 8; index++) {
         var i = index + 1;
         var employeeName = document.querySelector(".name" + i.toString());
@@ -157,6 +184,7 @@ function searchAnEmployee(searchTerm) {
             employeeBox.style.backgroundColor = "#7689DE";
         }
     }
+    console.log("INFO   [The search process is finished]");
 }
 
 // divide the employees to array, each array has only 8 or less of employees. 
@@ -175,44 +203,60 @@ function fillListOfEmployees() {
             pages[i][j] = employees[employee_cnt];
         }
     }
+    console.log("INFO   [The employees are filled in their pages]");
 }
 
 // update page number and its content.
 function updatePage(incOrDec) {
+    // go to next page or previous page based on 
+    // incOrDec var (+1 to next or -1 to previous) 
+
     var heading = document.querySelector(".heading");
     var pageNumber = parseInt(localStorage.getItem("pageNumber"), 10);
 
     if (incOrDec > 0 && pageNumber == numberOfPages) {
+        console.log("INFO   [No next page]")
         return;
     } else if (incOrDec < 0 && pageNumber == 1) {
+        console.log("INFO   [No previous page]")
         return;
     } else {
         pageNumber = pageNumber + incOrDec;
-        console.log(pageNumber, numberOfPages, "??");
 
         localStorage.setItem("pageNumber", pageNumber.toString());
 
         loadEmployeesOnPage(pages[pageNumber - 1]);
         heading.innerHTML = '<h1 class="heading" id="heading">Engineers Page ' + pageNumber + "</h1>";
     }
+
+    if (incOrDec > 0) {
+        console.log("INFO   [Go to next page]")
+    } else {
+        console.log("INFO   [Go to previous page]")
+    }
 }
 
 function sortRepresentedEmployees() {
+    // if the button of "sort the employees" was pressed
+    // then the employees will be sorted then filled again.
+
     var pageNumber = parseInt(localStorage.getItem("pageNumber"), 10) - 1;
-    console.log(" B ==> ", shuffledListsOfEmployees[pageNumber]);
     sortList(shuffledListsOfEmployees[pageNumber]);
-    console.log(" A ==> ", shuffledListsOfEmployees[pageNumber]);
     loadEmployeesOnPage(shuffledListsOfEmployees[pageNumber]);
+
+    console.log("INFO   [The employees of this page were sorted]")
 }
 
 function rgb(r, g, b) {
     return "rgb(" + r + "," + g + "," + b + ")";
 }
 
+// link updatePage function with back-button.
 document.querySelector(".back-button").addEventListener("click", function() {
     updatePage(-1);
 });
 
+// link updatePage function with next-button.
 document.querySelector(".next-button").addEventListener("click", function() {
     updatePage(+1);
 });
@@ -220,11 +264,11 @@ document.querySelector(".next-button").addEventListener("click", function() {
 document.querySelector(".list-engineers-button").addEventListener("click", sortRepresentedEmployees);
 
 function showInfo(num) {
+    // this will show an alert (as popup msg) to show the info of certain employee.
     var employeeName = document.querySelector(".name" + num.toString()).textContent;
     var employeeDescription = document.querySelector(".description" + num.toString()).textContent;
     var employeeStatus = "Hired? ";
     for (var i = 0; i < numberOfEmployees; i++) {
-        console.log(employeeName.toLowerCase(), employees[i].name);
 
         if (employeeName.toLowerCase() == employees[i].name.toLowerCase() &&
             employeeDescription.toLowerCase() == employees[i].description.toLowerCase()) {
@@ -233,9 +277,13 @@ function showInfo(num) {
         }
     }
     alert("Name: " + employeeName + "\n" + "Job Description: " + employeeDescription + "\n" + employeeStatus);
+    console.log("INFO   [An popup was shown certain employee]")
 }
 
 function hireMe(num, status) {
+    // if the button "hireMe" was pressed then the engineer become hired.  
+    // if the button "fireMe" was pressed then the engineer become fired.
+
     var employeeBox = document.querySelector("#b" + num.toString());
     var employeeName = document.querySelector(".name" + num.toString()).textContent;
     var employeeDescription = document.querySelector(".description" + num.toString()).textContent;
@@ -247,14 +295,12 @@ function hireMe(num, status) {
     }
 
     for (var i = 0; i < numberOfEmployees; i++) {
-        console.log(employeeName.toLowerCase(), employees[i].name);
 
         if (employeeName.toLowerCase() == employees[i].name.toLowerCase() &&
             employeeDescription.toLowerCase() == employees[i].description.toLowerCase()) {
 
             employees[i].hiredOrNot = yesOrNo;
             localStorage.setItem("employees", JSON.stringify(employees));
-            console.log(":", yesOrNo);
         }
     }
 
