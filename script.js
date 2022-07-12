@@ -202,9 +202,11 @@ function loadEmployeesOnPage(loadSortedListOrNote, pageNumber) {
     // if the ith employee in the page was exist ==> show it and 
     // fill its info., O.W hide the box of the ith employee.
 
-    console.log(":::::::::::::", listOfEmployee);
     // this loop to show the ith employee (if exist)
     for (var index = 0; index < end; index++) {
+        console.log(listOfEmployee[index]);
+
+
         var i = index + 1;
         var employeeBox = document.querySelector("#b" + i.toString());
         if (employeeBox.style.display === 'none') {
@@ -300,7 +302,7 @@ function updatePage(incOrDec) {
  * then the employees will be sorted then filled again.
  */
 function sortRepresentedEmployees() {
-    var pageNumber = parseInt(localStorage.getItem("pageNumber"), 10) - 1;
+    var pageNumber = parseInt(localStorage.getItem("pageNumber"), 10);
     loadEmployeesOnPage(true, pageNumber);
 
     console.log("INFO   [The employees of this page were sorted]")
