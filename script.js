@@ -43,6 +43,8 @@ var employees = [
 ];
 
 
+var parity = 0;
+
 /**
  * number of employees in the list of employees.
  * @type {number}
@@ -61,7 +63,6 @@ var numberOfPages = Math.floor((numberOfEmployees + 7) / 8);
  * check if it was a reload page or refresh page.
  */
 function checkRefresh() {
-
     //check for Navigation Timing API support
     if (window.performance) {
         console.log("INFO   [This app works properly on this browser]");
@@ -73,6 +74,8 @@ function checkRefresh() {
         // This is a fresh page load
 
         console.log("INFO   [This is relaod page]");
+        window.localStorage.setItem("p", "1");
+
 
         // load employees to LocalStorage.
         window.localStorage.setItem("employees", JSON.stringify(employees));
@@ -88,6 +91,8 @@ function checkRefresh() {
 
         console.log("INFO   [This is refreash page]");
 
+        getStatusOfEmployeesFromLocalStorage();
+
         // update pageNumber in the title of the page.
         pageNumber = parseInt(localStorage.getItem("pageNumber"), 10);
         var heading = document.querySelector(".heading");
@@ -98,6 +103,21 @@ function checkRefresh() {
 }
 
 
+/**
+ * update the status hiring for each employee in the employees 
+ * list by get the employees list that stored in LocalStorage. 
+ */
+function getStatusOfEmployeesFromLocalStorage() {
+    employeesString = localStorage.getItem("employees").replaceAll("{", "").slice(1, -1).split("},");
+    for (var i = 0; i < employeesString.length; i++) {
+        hiringStatus = employeesString[i].split(",")[2];
+        if (hiringStatus.toLowerCase().includes("yes")) {
+            employees[i]['hiredOrNot'] = "Yes";
+        }
+    }
+    console.log("INFO   [the status of hiring for each employees is updated]");
+}
+
 
 /**
  * sort an employees list alphabetically based on name of employee.
@@ -106,7 +126,7 @@ function checkRefresh() {
 function sortList(list) {
     for (var i = 0; i < list.length; i++) {
         for (var j = 0; j < list.length; j++) {
-            if (list[j].name > list[i].name) {
+            if (list[j]['name'] > list[i]['name']) {
                 var temp = list[j];
                 list[j] = list[i];
                 list[i] = temp;
@@ -117,8 +137,14 @@ function sortList(list) {
 }
 
 
+/**
+ * get a list of the employees of the current page (<= 8 employees)
+ * @param {number} pageNumber - the number of current page (1-biasad form) 
+ * @returns {Array<{name: string, description: string, hiredOrNot: string}>} - the employees that exist in the current page.
+ */
 function getEmployeesOfPage(pageNumber) {
-    if (!(pageNumber >= 1 && pageNumber <= numberOfPages)) {
+    if (pageNumber < 1 || pageNumber > numberOfPages) {
+        console.log("INFO   [out of range page number]");
         return [];
     }
 
@@ -129,16 +155,19 @@ function getEmployeesOfPage(pageNumber) {
         to = 8;
     } else if (pageNumber == numberOfPages) {
         from = (numberOfPages - 1) * 8;
-        to = numberOfPages - (numberOfPages - 1) * 8;
+        to = numberOfEmployees;
     } else {
-        from = (numberOfPages - 1) * 8;
-        to = numberOfPages * 8;
+        from = (pageNumber - 1) * 8;
+        to = pageNumber * 8;
     }
 
     listOfEmployee = [];
     for (var i = from; i < to; i++) {
         listOfEmployee.push(employees[i]);
     }
+
+    console.log("INFO   [the employees of the current page were got]");
+
     return listOfEmployee;
 }
 
@@ -160,7 +189,6 @@ function loadEmployeesOnPage(loadSortedListOrNote, pageNumber) {
     } else {
         sortList(listOfEmployee);
     }
-    console.log("==> ", listOfEmployee);
 
     // end store the max number of employees to be shown in single 
     // page but the last page may contain less than 8 employees.
@@ -174,6 +202,7 @@ function loadEmployeesOnPage(loadSortedListOrNote, pageNumber) {
     // if the ith employee in the page was exist ==> show it and 
     // fill its info., O.W hide the box of the ith employee.
 
+    console.log(":::::::::::::", listOfEmployee);
     // this loop to show the ith employee (if exist)
     for (var index = 0; index < end; index++) {
         var i = index + 1;
@@ -187,10 +216,10 @@ function loadEmployeesOnPage(loadSortedListOrNote, pageNumber) {
         );
 
         employeeName.innerHTML = String(
-            "<h3>" + listOfEmployee[index].name + "</h3>"
+            "<h3>" + listOfEmployee[index]['name'] + "</h3>"
         );
         employeeDescription.innerHTML = String(
-            "<p>" + listOfEmployee[index].description + "</p>"
+            "<p>" + listOfEmployee[index]['description'] + "</p>"
         );
     }
 
@@ -322,7 +351,6 @@ function hireMe(num, status) {
         if (employeeName.toLowerCase() == employees[i].name.toLowerCase() &&
             employeeDescription.toLowerCase() == employees[i].description.toLowerCase()) {
             employees[i]['hiredOrNot'] = yesOrNo;
-            console.log("YYY", getEmployeesOfPage(pageNumber));
         }
     }
 
